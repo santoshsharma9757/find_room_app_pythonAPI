@@ -14,6 +14,9 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+# git remote set-url origin "https://github-username@github.com/github-username/github-repository-name.git"
+# git remote set-url origin "https://santoshsharma975@github.com/santoshsharma9757/find_room_app_pythonAPI.git"
+
 from django.contrib import admin
 from django.urls import path,include
 from django.conf import settings
