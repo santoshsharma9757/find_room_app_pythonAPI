@@ -6,7 +6,7 @@ from account.models import User
 
 class Room(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE,null=True,related_name='rooms')
     city=models.CharField(max_length=200,choices=CITY_CHOICES)
     district=models.CharField(max_length=200,choices=District_CHOICES)
     address=models.TextField()

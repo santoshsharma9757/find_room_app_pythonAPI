@@ -19,8 +19,7 @@ class RoomSerializer(serializers.ModelSerializer):
         child=serializers.ImageField(allow_empty_file=False, use_url=False),
         write_only=True
     )
-    # user = UserSerializer(read_only=True)
-    # print("SSSSUUSER",user)
+    user = UserSerializer(read_only=True)
     class Meta:
         model = Room
         fields = ['id','city','user','district','address', 'price', 'description', 'gallery_images', 'images']

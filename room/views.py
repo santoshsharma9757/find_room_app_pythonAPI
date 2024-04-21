@@ -30,16 +30,16 @@ class RoomView(APIView):
     
     def post(self,request,format=None):
         data=request.data
+        user = request.user 
         serializer=RoomSerializer(data=data)
         if serializer.is_valid():
-          serializer.save()
+          serializer.save(user=user)
           return Response({"message":'Room Posted successfully'},status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors,status=status.HTTP_201_CREATED)
         
 
 class RoomDetailView(APIView):
-    
     def get(self,request,pk,format=None):
         try:
          roomData= Room.objects.get(id=pk)
@@ -48,6 +48,19 @@ class RoomDetailView(APIView):
          return Response({'data':serializer.data},status=status.HTTP_200_OK)
         except Room.DoesNotExist:
             return Response({"message": "Room not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+class UserRoomsAPIView(APIView):
+    def get(self, request, user_id, format=None):
+        try:
+            rooms = Room.objects.filter(user_id=user_id)
+            serializer = RoomSerializer(rooms, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Room.DoesNotExist:
+            return Response({'error': 'Rooms not found for the given user ID'}, status=status.HTTP_404_NOT_FOUND)
+
+
+        
+
 
 
 
