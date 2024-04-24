@@ -14,18 +14,16 @@ from rest_framework.permissions import IsAuthenticated
 class RoomView(APIView):
    
     permission_classes = [IsAuthenticated]
-    def get(self,request,format=None):
-        # Get the 'district' parameter from the query string
-        district = request.query_params.get('district', None)
-        # Filter rooms based on the district (modify this according to your model structure)
-        print("QUERY PARAM DISTRICT",district)
-        if district:
-            rooms = Room.objects.filter(district=district)
-        else:
-            rooms = Room.objects.all()
-        print(rooms)
-        serializer= RoomSerializer(rooms,many=True)
-        return Response({'data':serializer.data},status=status.HTTP_200_OK)
+    def get(self, request, format=None):
+     district = request.query_params.get('district', None)
+     if district:
+        # Normalize district parameter to lowercase
+        district = district.lower()
+        rooms = Room.objects.filter(district__iexact=district)
+     else:
+        rooms = Room.objects.all()
+     serializer = RoomSerializer(rooms, many=True)
+     return Response({'data': serializer.data}, status=status.HTTP_200_OK)
 
     
     def post(self,request,format=None):
