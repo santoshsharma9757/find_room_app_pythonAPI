@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'phonenumber_field',
     'account',
-    'room'
+    'room',
+    'transaction'
 ]
 
 MIDDLEWARE = [

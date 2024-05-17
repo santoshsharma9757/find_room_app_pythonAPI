@@ -18,3 +18,6 @@ class Room(models.Model):
 class RoomImages(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE,related_name='gallery_images')
     image = models.ImageField(upload_to="room_images")
+
+
+    
