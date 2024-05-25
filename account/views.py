@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
-from .serializers import UserRegistrationSerializer,UserLoginSerializer,UserProfileSerializer
+from .serializers import PasswordResetSerializer, UserRegistrationSerializer,UserLoginSerializer,UserProfileSerializer
 from django.contrib.auth import authenticate
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -32,23 +32,26 @@ class UserRegisterView(APIView):
               
 
 class UserLoginView(APIView):
-     # renderer_classes=[UserRenderer]
-     def post(self,request,format=None):
-          serializer=UserLoginSerializer(data=request.data)
-          if serializer.is_valid():
-               email=serializer.data.get("email")
-               password=serializer.data.get("password")
-               userID=serializer.data.get("id")
-               print("USERID:",userID)
-               user=authenticate(email=email,password=password)
-               token=get_tokens_for_user(user)
-               if user is not None:
-                     user_id = user.id
-                     return Response({"message":"Login successfully", "user":user_id,  'token':token},status=status.HTTP_200_OK)
-               else:
-                return Response(serializer.errors,status=status.HTTP_401_UNAUTHORIZED)
-          else:
-               return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+    # renderer_classes = [UserRenderer]
+    def post(self, request, format=None):
+        serializer = UserLoginSerializer(data=request.data)
+        if serializer.is_valid():
+            email = serializer.data.get("email")
+            password = serializer.data.get("password")
+            user = authenticate(email=email, password=password)
+            if user is not None:
+                token = get_tokens_for_user(user)
+                return Response({
+                    "message": "Login successfully",
+                    "user": user.id,
+                    'token': token
+                }, status=status.HTTP_200_OK)
+            else:
+                return Response({
+                    "error": "Invalid email or password"
+                }, status=status.HTTP_401_UNAUTHORIZED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
           
 class CityView(APIView):
      def get(self,request,formate=None):
@@ -71,5 +74,18 @@ class UserProfileView(APIView):
         
       
 
-               
+class PasswordResetView(APIView):
+    def post(self, request):
+        serializer = PasswordResetSerializer(data=request.data)
+        if serializer.is_valid():
+            email = serializer.validated_data['email']
+            new_password = serializer.validated_data['new_password']
+            try:
+                user = User.objects.get(email=email)
+                user.set_password(new_password)
+                user.save()
+                return Response({'message': 'Password reset successfully.'}, status=status.HTTP_200_OK)
+            except User.DoesNotExist:
+                return Response({'error': 'User with this email does not exist.'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)               
         

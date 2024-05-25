@@ -136,7 +136,8 @@ class User(AbstractBaseUser):
         unique=True,
     )
     name=models.CharField(max_length=200)
-    mobile=PhoneNumberField()
+    # mobile=PhoneNumberField(region='NP')
+    mobile = models.PositiveIntegerField()
     city=models.CharField(max_length=200,choices=CITY_CHOICES)
     district=models.CharField(max_length=200,choices=District_CHOICES)
     address=models.TextField()

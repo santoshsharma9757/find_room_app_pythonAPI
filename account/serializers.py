@@ -34,7 +34,9 @@ class UserProfileSerializer(serializers.ModelSerializer):
         model=User
         fields=['id','name','mobile','district']        
 
-
+class PasswordResetSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    new_password = serializers.CharField(write_only=True)
     
 
 
